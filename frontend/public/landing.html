@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RocketAgents.AI - AI-Powered Customer Care Revolution</title>
+    <meta name="description" content="Transform your customer support with AI-powered automation, unified channel management, and intelligent ticket routing across Instagram, WhatsApp, Messenger, and Email.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark: #0a0a0a;
+            --gray: #111111;
+            --light-gray: #1a1a1a;
+            --border: rgba(255, 255, 255, 0.06);
+            --text: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent: #2563eb;
+            --purple: #7c3aed;
+            --green: #10b981;
+            --orange: #f59e0b;
+            --red: #ef4444;
+            --blue: #3b82f6;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --gradient-card: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--dark);
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(240, 147, 251, 0.03) 0%, transparent 50%);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--light-gray);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(10, 10, 10, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            letter-spacing: -0.01em;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            letter-spacing: -0.01em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-hero);
+            color: white;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 16px;
+            border-radius: 16px;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 140px 2rem 100px;
+            text-align: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 30%, transparent 70%);
+            pointer-events: none;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 1; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-badge::before {
+            content: '✨';
+            font-size: 16px;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--gradient-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+        }
+
+        .hero-stat {
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-stat::after {
+            content: '';
+            position: absolute;
+            right: -1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 60%;
+            background: var(--border);
+        }
+
+        .hero-stat:last-child::after {
+            display: none;
+        }
+
+        .hero-stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 25px 2rem 35px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* First section after hero needs minimal top padding */
+        #features.section {
+            padding-top: 20px;
+        }
+
+        /* Sections with CTAs need reduced bottom padding */
+        .section:has(.cta-block) {
+            padding-bottom: 20px;
+        }
+
+        .section-dark {
+            background: var(--gray);
+            margin: 0 -100vw;
+            padding-left: calc(100vw - 50%);
+            padding-right: calc(100vw - 50%);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* Feature Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--gradient-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            position: relative;
+        }
+
+        .feature-icon::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 18px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent, rgba(255,255,255,0.05));
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+        }
+
+        .feature-icon.tickets {
+            background: var(--gradient-primary);
+        }
+
+        .feature-icon.chat {
+            background: linear-gradient(135deg, #00d4aa 0%, #00a085 100%);
+        }
+
+        .feature-icon.integrations {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        }
+
+        .feature-icon.analytics {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .feature-icon.automation {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .feature-icon.security {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .feature-title {
+            font-size: 1.375rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            position: relative;
+            padding-left: 1.5rem;
+            font-size: 14px;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        /* Integration Cards */
+        .integrations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .integration-card {
+            background: var(--gray);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .integration-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .integration-card.instagram {
+            background: linear-gradient(135deg, #e4405f 0%, #c13584 100%);
+        }
+
+        .integration-card.messenger {
+            background: linear-gradient(135deg, #0078ff 0%, #0052cc 100%);
+        }
+
+        .integration-card.whatsapp {
+            background: linear-gradient(135deg, #25d366 0%, #1ebe57 100%);
+        }
+
+        .integration-card.gmail {
+            background: linear-gradient(135deg, #ea4335 0%, #d93025 100%);
+        }
+
+        .integration-card.slack {
+            background: linear-gradient(135deg, #4a154b 0%, #350d36 100%);
+        }
+
+        .integration-card.teams {
+            background: linear-gradient(135deg, #464eb8 0%, #6264a7 100%);
+        }
+
+        .integration-icon {
+            font-size: 36px;
+            margin-bottom: 1rem;
+        }
+
+        .integration-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .integration-desc {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Dashboard Preview */
+        .dashboard-preview {
+            background: var(--gradient-card);
+            border-radius: 24px;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            margin-top: 1.5rem;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dashboard-mock {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-radius: 20px;
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mock-header {
+            background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mock-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mock-header .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .live-indicator::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .mock-content {
+            flex: 1;
+            padding: 2rem;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .mock-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .mock-stat {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mock-stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-hero);
+        }
+
+        .mock-stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .mock-stat-label {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .mock-tickets {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tickets-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tickets-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .tickets-count {
+            background: var(--gradient-hero);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .mock-ticket {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .mock-ticket:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
+        }
+
+        .ticket-info {
+            flex: 1;
+        }
+
+        .ticket-id {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .ticket-description {
+            color: #e2e8f0;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .ticket-meta {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .ticket-channel {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+        }
+
+        .ticket-time {
+            color: #94a3b8;
+        }
+
+        .mock-ticket-status {
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .status-open {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-progress {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .status-resolved {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .dashboard-sidebar {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .activity-feed {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .activity-header {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.new-ticket {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .activity-icon.resolved {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .activity-icon.escalated {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .activity-text {
+            flex: 1;
+        }
+
+        .activity-description {
+            color: #e2e8f0;
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .activity-time {
+            color: #94a3b8;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .team-overview {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .team-header {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .agent-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+        }
+
+        .agent-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gradient-hero);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-name {
+            color: #e2e8f0;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .agent-status {
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+
+        .agent-tickets {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Process Section */
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .process-step {
+            text-align: center;
+            position: relative;
+        }
+
+        .process-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+
+        .process-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .process-description {
+            color: var(--text-secondary);
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .testimonial {
+            background: var(--gray);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .testimonial-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .testimonial-info p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Pricing */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .pricing-card {
+            background: var(--gray);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .pricing-badge {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .pricing-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-period {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .pricing-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--gradient-primary);
+            padding: 80px 3rem;
+            text-align: center;
+            margin: 80px 0;
+            border-radius: 20px;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* FAQ */
+        .faq-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .faq-item {
+            background: var(--gray);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 1.5rem;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--gray);
+            padding: 4rem 3rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--text);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .hero-content {
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .hero-badge {
+            animation: scaleIn 0.6s ease forwards;
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .hero h1 {
+            animation: slideInLeft 0.8s ease forwards;
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+
+        .hero p {
+            animation: slideInRight 0.8s ease forwards;
+            animation-delay: 0.6s;
+            opacity: 0;
+        }
+
+        .hero-buttons {
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.8s;
+            opacity: 0;
+        }
+
+        .hero-stats {
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 1s;
+            opacity: 0;
+        }
+
+        /* Add mobile menu toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .nav-links.mobile-open {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            gap: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .hero-stats {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                margin-top: 1.5rem;
+            }
+
+            .hero-stat::after {
+                display: none;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .integrations-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .mock-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .dashboard-mock {
+                min-height: 500px;
+            }
+
+            .mock-content {
+                padding: 1.5rem;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .pricing-card.featured {
+                transform: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            nav {
+                padding: 1rem;
+                position: relative;
+            }
+            
+            .section {
+                padding: 60px 1rem;
+            }
+
+            #pricing.section,
+            #integrations.section {
+                padding-top: 30px;
+            }
+
+            .hero {
+                padding: 120px 1rem 60px;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+            }
+
+            .features-grid {
+                gap: 1.5rem;
+                margin-top: 1.5rem;
+            }
+
+            .section-subtitle {
+                margin-bottom: 2rem;
+            }
+
+            .dashboard-mock {
+                min-height: 500px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .integrations-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-stats {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">RocketAgents.AI</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#integrations">Integrations</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <a href="https://rocketagents.ai" class="btn btn-primary">Get Started</a>
+                <button class="mobile-menu-toggle">☰</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">AI-Powered Customer Care Revolution</div>
+            <h1>Transform Customer Support with Intelligent Automation</h1>
+            <p>Unify Instagram, WhatsApp, Messenger, and Email into one powerful AI-driven platform. Deliver exceptional customer experiences with automated ticket routing, real-time collaboration, and predictive analytics.</p>
+            <div class="hero-buttons">
+                <a href="https://rocketagents.ai" class="btn btn-primary btn-large">
+                    Start Free Trial
+                    <span>→</span>
+                </a>
+                <a href="#dashboard" class="btn btn-outline btn-large">
+                    View Live Demo
+                    <span>📊</span>
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-number">1000+</span>
+                    <span class="hero-stat-label">Businesses Trust Us</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">99.2%</span>
+                    <span class="hero-stat-label">Customer Satisfaction</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">1.8min</span>
+                    <span class="hero-stat-label">Average Response Time</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section" id="features">
+        <h2 class="section-title">Revolutionary Features That Set Us Apart</h2>
+        <p class="section-subtitle">Experience next-generation customer support with AI-powered automation, seamless integrations, and intelligent analytics that drive results and exceed customer expectations.</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon tickets">🎯</div>
+                <h3 class="feature-title">AI-Powered Ticket Intelligence</h3>
+                <p class="feature-description">Revolutionary ticket management with ML-driven routing, predictive escalation, and automated resolution suggestions</p>
+                <ul class="feature-list">
+                    <li>Intelligent auto-classification and routing</li>
+                    <li>Predictive escalation before issues arise</li>
+                    <li>AI-suggested responses and solutions</li>
+                    <li>Dynamic priority scoring algorithm</li>
+                    <li>Sentiment analysis and urgency detection</li>
+                    <li>Smart workload distribution</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon chat">🚀</div>
+                <h3 class="feature-title">Next-Gen Team Collaboration</h3>
+                <p class="feature-description">Advanced team workspace with AI-assisted collaboration, real-time presence, and contextual communication</p>
+                <ul class="feature-list">
+                    <li>AI-powered context sharing and handoffs</li>
+                    <li>Smart @mentions with ticket context</li>
+                    <li>Real-time collaborative editing</li>
+                    <li>Integrated video conferencing</li>
+                    <li>Knowledge base integration</li>
+                    <li>Performance analytics and insights</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon integrations">🌐</div>
+                <h3 class="feature-title">Universal Channel Unification</h3>
+                <p class="feature-description">Seamlessly connect every customer touchpoint with our advanced integration engine and real-time synchronization</p>
+                <ul class="feature-list">
+                    <li>Instagram DMs, Comments & Story Replies</li>
+                    <li>WhatsApp Business API & Web</li>
+                    <li>Facebook Messenger & Instagram Messenger</li>
+                    <li>Multi-provider email integration</li>
+                    <li>Slack, Teams & Discord bridges</li>
+                    <li>Custom API & webhook connectors</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon analytics">📈</div>
+                <h3 class="feature-title">Predictive Analytics Engine</h3>
+                <p class="feature-description">Advanced business intelligence with machine learning insights, predictive modeling, and actionable recommendations</p>
+                <ul class="feature-list">
+                    <li>Real-time performance monitoring</li>
+                    <li>Predictive customer churn analysis</li>
+                    <li>AI-powered trend forecasting</li>
+                    <li>Advanced sentiment tracking</li>
+                    <li>Custom KPI dashboards</li>
+                    <li>Automated reporting & alerts</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon automation">🧠</div>
+                <h3 class="feature-title">Intelligent Automation Suite</h3>
+                <p class="feature-description">Next-generation AI workflows with natural language processing, automated decision-making, and self-learning capabilities</p>
+                <ul class="feature-list">
+                    <li>GPT-powered response generation</li>
+                    <li>Automated resolution workflows</li>
+                    <li>Smart content personalization</li>
+                    <li>Dynamic workflow optimization</li>
+                    <li>Voice-to-text processing</li>
+                    <li>Multi-language auto-translation</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon security">🛡️</div>
+                <h3 class="feature-title">Zero-Trust Security Architecture</h3>
+                <p class="feature-description">Military-grade security with advanced threat detection, compliance automation, and privacy-first design principles</p>
+                <ul class="feature-list">
+                    <li>AES-256 end-to-end encryption</li>
+                    <li>Advanced threat detection & monitoring</li>
+                    <li>Zero-trust network architecture</li>
+                    <li>Automated compliance reporting</li>
+                    <li>Biometric authentication options</li>
+                    <li>SOC 2 Type II certified infrastructure</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Features CTA -->
+        <div class="cta-block" style="text-align: center; margin-top: 2rem; padding: 1.5rem; background: var(--gradient-card); border-radius: 20px; border: 1px solid var(--border); backdrop-filter: blur(20px);">
+            <h3 style="font-size: 1.375rem; font-weight: 700; margin-bottom: 0.75rem; background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Ready to Transform Your Customer Support?</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.25rem; font-size: 0.95rem;">Join thousands of businesses already using RocketAgents.AI to deliver exceptional customer experiences.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="https://rocketagents.ai" class="btn btn-primary btn-large">Start Free Trial</a>
+                <a href="#pricing" class="btn btn-outline btn-large">View Pricing</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section section-dark">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Simple setup process that gets you up and running in minutes, not hours</p>
+        
+        <div class="process-grid">
+            <div class="process-step">
+                <div class="process-number">1</div>
+                <h3 class="process-title">Connect Your Channels</h3>
+                <p class="process-description">Link your Instagram, WhatsApp, Messenger, and email accounts with one-click OAuth integration</p>
+            </div>
+            
+            <div class="process-step">
+                <div class="process-number">2</div>
+                <h3 class="process-title">Configure Your Team</h3>
+                <p class="process-description">Add team members, set up roles and permissions, and configure escalation workflows</p>
+            </div>
+            
+            <div class="process-step">
+                <div class="process-number">3</div>
+                <h3 class="process-title">Start Receiving Tickets</h3>
+                <p class="process-description">Messages automatically convert to tickets, get assigned to agents, and tracked until resolution</p>
+            </div>
+            
+            <div class="process-step">
+                <div class="process-number">4</div>
+                <h3 class="process-title">Monitor & Optimize</h3>
+                <p class="process-description">Use real-time analytics to monitor performance, identify bottlenecks, and optimize workflows</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integrations Section -->
+    <section class="section" id="integrations">
+        <h2 class="section-title">Seamless Channel Integrations</h2>
+        <p class="section-subtitle">Connect your existing communication channels with secure, one-click setup and real-time synchronization</p>
+        
+        <div class="integrations-grid">
+            <div class="integration-card instagram">
+                <div class="integration-icon">📷</div>
+                <h3 class="integration-title">Instagram</h3>
+                <p class="integration-desc">Direct Messages, Comments, Story Mentions</p>
+            </div>
+            
+            <div class="integration-card messenger">
+                <div class="integration-icon">💬</div>
+                <h3 class="integration-title">Messenger</h3>
+                <p class="integration-desc">Facebook Page Messages, Quick Replies</p>
+            </div>
+            
+            <div class="integration-card whatsapp">
+                <div class="integration-icon">📱</div>
+                <h3 class="integration-title">WhatsApp</h3>
+                <p class="integration-desc">Business Messages, Media, Templates</p>
+            </div>
+            
+            <div class="integration-card gmail">
+                <div class="integration-icon">📧</div>
+                <h3 class="integration-title">Gmail</h3>
+                <p class="integration-desc">Email Support, Thread Management</p>
+            </div>
+            
+            <div class="integration-card slack">
+                <div class="integration-icon">💼</div>
+                <h3 class="integration-title">Slack</h3>
+                <p class="integration-desc">Team Notifications, Workspace Integration</p>
+            </div>
+            
+            <div class="integration-card teams">
+                <div class="integration-icon">🔗</div>
+                <h3 class="integration-title">Microsoft Teams</h3>
+                <p class="integration-desc">Enterprise Communication, Channels</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview -->
+    <section class="section" id="dashboard">
+        <h2 class="section-title">Powerful Admin Dashboard</h2>
+        <p class="section-subtitle">Monitor your team performance, track customer satisfaction, and optimize workflows with real-time insights</p>
+        
+        <div class="dashboard-preview">
+            <div class="dashboard-mock">
+                <div class="mock-header">
+                    <h3>
+                        🎯 AI Customer Care Command Center
+                    </h3>
+                    <div class="live-indicator">
+                        Live Analytics
+                    </div>
+                </div>
+                <div class="mock-content">
+                    <div class="mock-stats">
+                        <div class="mock-stat">
+                            <div class="mock-stat-value">1,247</div>
+                            <div class="mock-stat-label">Active Tickets</div>
+                        </div>
+                        <div class="mock-stat">
+                            <div class="mock-stat-value">99.2%</div>
+                            <div class="mock-stat-label">SLA Compliance</div>
+                        </div>
+                        <div class="mock-stat">
+                            <div class="mock-stat-value">1.8min</div>
+                            <div class="mock-stat-label">Avg Response</div>
+                        </div>
+                        <div class="mock-stat">
+                            <div class="mock-stat-value">4.9/5</div>
+                            <div class="mock-stat-label">Customer Rating</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-grid">
+                        <div class="mock-tickets">
+                            <div class="tickets-header">
+                                <div class="tickets-title">Recent Tickets</div>
+                                <div class="tickets-count">847 Active</div>
+                            </div>
+                            
+                            <div class="mock-ticket">
+                                <div class="ticket-info">
+                                    <div class="ticket-id">#TK-007824</div>
+                                    <div class="ticket-description">Customer needs urgent assistance with order cancellation and refund processing</div>
+                                    <div class="ticket-meta">
+                                        <span class="ticket-channel">Instagram</span>
+                                        <span class="ticket-time">2 minutes ago</span>
+                                    </div>
+                                </div>
+                                <span class="mock-ticket-status status-open">URGENT</span>
+                            </div>
+                            
+                            <div class="mock-ticket">
+                                <div class="ticket-info">
+                                    <div class="ticket-id">#TK-007823</div>
+                                    <div class="ticket-description">Product sizing question for premium collection items</div>
+                                    <div class="ticket-meta">
+                                        <span class="ticket-channel">WhatsApp</span>
+                                        <span class="ticket-time">5 minutes ago</span>
+                                    </div>
+                                </div>
+                                <span class="mock-ticket-status status-progress">ACTIVE</span>
+                            </div>
+                            
+                            <div class="mock-ticket">
+                                <div class="ticket-info">
+                                    <div class="ticket-id">#TK-007822</div>
+                                    <div class="ticket-description">Shipping delay compensation request for delayed premium order</div>
+                                    <div class="ticket-meta">
+                                        <span class="ticket-channel">Email</span>
+                                        <span class="ticket-time">8 minutes ago</span>
+                                    </div>
+                                </div>
+                                <span class="mock-ticket-status status-resolved">SOLVED</span>
+                            </div>
+                            
+                            <div class="mock-ticket">
+                                <div class="ticket-info">
+                                    <div class="ticket-id">#TK-007821</div>
+                                    <div class="ticket-description">Account login issues and password reset assistance needed</div>
+                                    <div class="ticket-meta">
+                                        <span class="ticket-channel">Messenger</span>
+                                        <span class="ticket-time">12 minutes ago</span>
+                                    </div>
+                                </div>
+                                <span class="mock-ticket-status status-progress">ACTIVE</span>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-sidebar">
+                            <div class="activity-feed">
+                                <div class="activity-header">Recent Activity</div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon new-ticket">📝</div>
+                                    <div class="activity-text">
+                                        <div class="activity-description">New ticket from Instagram</div>
+                                        <div class="activity-time">2 min ago</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon resolved">✅</div>
+                                    <div class="activity-text">
+                                        <div class="activity-description">Ticket #TK-007820 resolved</div>
+                                        <div class="activity-time">5 min ago</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon escalated">⚡</div>
+                                    <div class="activity-text">
+                                        <div class="activity-description">Priority ticket escalated</div>
+                                        <div class="activity-time">8 min ago</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon new-ticket">📧</div>
+                                    <div class="activity-text">
+                                        <div class="activity-description">Email inquiry received</div>
+                                        <div class="activity-time">12 min ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="team-overview">
+                                <div class="team-header">Team Status</div>
+                                
+                                <div class="agent-item">
+                                    <div class="agent-avatar">SA</div>
+                                    <div class="agent-info">
+                                        <div class="agent-name">Sarah Ahmed</div>
+                                        <div class="agent-status">Online • Active</div>
+                                    </div>
+                                    <div class="agent-tickets">12</div>
+                                </div>
+                                
+                                <div class="agent-item">
+                                    <div class="agent-avatar">MK</div>
+                                    <div class="agent-info">
+                                        <div class="agent-name">Mike Kim</div>
+                                        <div class="agent-status">Online • Active</div>
+                                    </div>
+                                    <div class="agent-tickets">8</div>
+                                </div>
+                                
+                                <div class="agent-item">
+                                    <div class="agent-avatar">JD</div>
+                                    <div class="agent-info">
+                                        <div class="agent-name">Jessica Davis</div>
+                                        <div class="agent-status">Away • 5 min</div>
+                                    </div>
+                                    <div class="agent-tickets">15</div>
+                                </div>
+                                
+                                <div class="agent-item">
+                                    <div class="agent-avatar">AL</div>
+                                    <div class="agent-info">
+                                        <div class="agent-name">Alex Liu</div>
+                                        <div class="agent-status">Online • Active</div>
+                                    </div>
+                                    <div class="agent-tickets">6</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Benefits -->
+        <div style="margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div style="text-align: center; padding: 1.25rem; background: var(--gradient-card); border-radius: 16px; border: 1px solid var(--border); backdrop-filter: blur(20px);">
+                <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">⚡</div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">Lightning Fast Setup</h4>
+                <p style="font-size: 0.8rem; color: var(--text-secondary);">Get started in under 5 minutes</p>
+            </div>
+            <div style="text-align: center; padding: 1.25rem; background: var(--gradient-card); border-radius: 16px; border: 1px solid var(--border); backdrop-filter: blur(20px);">
+                <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">🔄</div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">Real-time Sync</h4>
+                <p style="font-size: 0.8rem; color: var(--text-secondary);">Instant updates across all channels</p>
+            </div>
+            <div style="text-align: center; padding: 1.25rem; background: var(--gradient-card); border-radius: 16px; border: 1px solid var(--border); backdrop-filter: blur(20px);">
+                <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">📈</div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">Proven Results</h4>
+                <p style="font-size: 0.8rem; color: var(--text-secondary);">85% faster response times</p>
+            </div>
+            <div style="text-align: center; padding: 1.25rem; background: var(--gradient-card); border-radius: 16px; border: 1px solid var(--border); backdrop-filter: blur(20px);">
+                <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">🛡️</div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">Enterprise Security</h4>
+                <p style="font-size: 0.8rem; color: var(--text-secondary);">Bank-grade encryption</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section section-dark">
+        <h2 class="section-title">Trusted by Leading Businesses</h2>
+        <p class="section-subtitle">See what our customers say about their experience with RocketAgents.AI</p>
+        
+        <div class="testimonials-grid">
+            <div class="testimonial">
+                <p class="testimonial-content">"RocketAgents.AI transformed our customer support. We reduced response times by 70% and increased customer satisfaction significantly."</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">SJ</div>
+                    <div class="testimonial-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>Customer Success Manager, TechCorp</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial">
+                <p class="testimonial-content">"The team collaboration features are incredible. Our agents can now work together seamlessly across all channels."</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">MK</div>
+                    <div class="testimonial-info">
+                        <h4>Michael Kim</h4>
+                        <p>Operations Director, RetailPlus</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial">
+                <p class="testimonial-content">"Integration was seamless. We were up and running in less than an hour with all our channels connected."</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">AL</div>
+                    <div class="testimonial-info">
+                        <h4>Anna Lopez</h4>
+                        <p>Head of Support, GrowthCo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section" id="pricing">
+        <h2 class="section-title">Simple, Transparent Pricing</h2>
+        <p class="section-subtitle">Choose the plan that fits your business needs. No hidden fees, no long-term contracts.</p>
+        
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3 class="pricing-name">Starter</h3>
+                <div class="pricing-price">$29</div>
+                <div class="pricing-period">per agent/month</div>
+                <ul class="pricing-features">
+                    <li>Up to 3 agents</li>
+                    <li>2 channel integrations</li>
+                    <li>Basic ticketing system</li>
+                    <li>Email support</li>
+                    <li>Standard analytics</li>
+                </ul>
+                <a href="https://rocketagents.ai" class="btn btn-outline btn-large">Start Free Trial</a>
+            </div>
+            
+            <div class="pricing-card featured">
+                <div class="pricing-badge">Most Popular</div>
+                <h3 class="pricing-name">Professional</h3>
+                <div class="pricing-price">$59</div>
+                <div class="pricing-period">per agent/month</div>
+                <ul class="pricing-features">
+                    <li>Up to 15 agents</li>
+                    <li>All channel integrations</li>
+                    <li>Advanced ticketing & automation</li>
+                    <li>Team collaboration features</li>
+                    <li>Priority support</li>
+                    <li>Advanced analytics & reporting</li>
+                </ul>
+                <a href="https://rocketagents.ai" class="btn btn-primary btn-large">Start Free Trial</a>
+            </div>
+            
+            <div class="pricing-card">
+                <h3 class="pricing-name">Enterprise</h3>
+                <div class="pricing-price">$99</div>
+                <div class="pricing-period">per agent/month</div>
+                <ul class="pricing-features">
+                    <li>Unlimited agents</li>
+                    <li>Custom integrations</li>
+                    <li>White-label options</li>
+                    <li>Dedicated account manager</li>
+                    <li>Custom SLA agreements</li>
+                    <li>Enterprise security & compliance</li>
+                </ul>
+                <a href="https://rocketagents.ai" class="btn btn-outline btn-large">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Everything you need to know about RocketAgents.AI and our customer care platform</p>
+        
+        <div class="faq-grid">
+            <div class="faq-item">
+                <button class="faq-question">
+                    How quickly can I set up RocketAgents.AI?
+                    <span>+</span>
+                </button>
+                <div class="faq-answer">
+                    Most businesses are up and running within 30 minutes. Our one-click integrations with major platforms make setup incredibly fast. You can connect your first channel and start receiving tickets immediately.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    Which channels do you support?
+                    <span>+</span>
+                </button>
+                <div class="faq-answer">
+                    We support Instagram Direct Messages, Facebook Messenger, WhatsApp Business, Gmail, Slack, and Microsoft Teams. We're constantly adding new integrations based on customer feedback.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    Is there a free trial available?
+                    <span>+</span>
+                </button>
+                <div class="faq-answer">
+                    Yes! We offer a 14-day free trial with full access to all features. No credit card required to start. You can test all integrations and see how it works for your business.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    How secure is my customer data?
+                    <span>+</span>
+                </button>
+                <div class="faq-answer">
+                    Security is our top priority. We use bank-grade encryption, comply with GDPR and CCPA regulations, and offer enterprise features like SSO and audit logs. All data is encrypted in transit and at rest.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    Can I customize the platform for my business?
+                    <span>+</span>
+                </button>
+                <div class="faq-answer">
+                    Absolutely! Our platform offers extensive customization options including custom fields, automated workflows, branded interfaces, and API access for deeper integrations.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <button class="faq-question">
+                    What kind of support do you provide?
+                    <span>+</span>
+                </button>
+                <div class="faq-answer">
+                    We provide 24/7 email support for all plans, with priority support for Professional and Enterprise customers. Enterprise customers also get a dedicated account manager and custom SLA agreements.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Transform Your Customer Care?</h2>
+        <p>Join hundreds of businesses using RocketAgents.AI to deliver exceptional customer experiences across all channels</p>
+        <a href="https://rocketagents.ai" class="btn btn-outline btn-large">Start Your Free Trial</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Product</h3>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#integrations">Integrations</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#dashboard">Dashboard</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">API Reference</a></li>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Status Page</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Security</a></li>
+                    <li><a href="#">GDPR</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 RocketAgents.AI. All rights reserved.</p>
+            <p>Complete Customer Care Platform for Modern Businesses</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+
+        // Add stagger animation to elements
+        function animateElements() {
+            const elements = document.querySelectorAll('.feature-card, .integration-card, .testimonial, .pricing-card');
+            elements.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+                el.classList.add('animate-in');
+            });
+        }
+
+        // Mobile menu functionality
+        document.querySelector('.mobile-menu-toggle')?.addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('mobile-open');
+            this.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                const navLinks = document.querySelector('.nav-links');
+                const toggle = document.querySelector('.mobile-menu-toggle');
+                navLinks.classList.remove('mobile-open');
+                if (toggle) toggle.textContent = '☰';
+            });
+        });
+
+        // FAQ functionality
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', function() {
+                const faqItem = this.parentElement;
+                const isActive = faqItem.classList.contains('active');
+                
+                // Close all FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('active');
+                    item.querySelector('.faq-question span').textContent = '+';
+                });
+                
+                // Toggle current item
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                    this.querySelector('span').textContent = '−';
+                }
+            });
+        });
+
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.feature-card, .integration-card, .testimonial, .pricing-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Initialize animations on load
+        document.addEventListener('DOMContentLoaded', function() {
+            animateElements();
+        });
+
+        // Add typing effect for hero title
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.innerHTML = '';
+            element.style.opacity = '1';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Enhanced scroll performance with throttling
+        let ticking = false;
+        function updateOnScroll() {
+            // Header scroll effect
+            const header = document.querySelector('header');
+            const scrolled = window.scrollY > 50;
+            
+            if (scrolled) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            // Parallax effect
+            const hero = document.querySelector('.hero');
+            const scrollY = window.scrollY;
+            const heroHeight = hero.offsetHeight;
+            const parallaxSpeed = 0.3;
+            
+            if (scrollY < heroHeight) {
+                hero.style.transform = `translateY(${scrollY * parallaxSpeed}px)`;
+            }
+
+            ticking = false;
+        }
+
+        function requestTick() {
+            if (!ticking) {
+                requestAnimationFrame(updateOnScroll);
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', requestTick);
+    </script>
+</body>
+</html>

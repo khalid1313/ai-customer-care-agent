@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo "Starting AI Customer Care servers..."
+echo ""
+echo "Backend will run on: http://localhost:3001"
+echo "Frontend will run on: http://localhost:3000"
+echo ""
+echo "To start the servers, run these commands in separate terminals:"
+echo ""
+echo "Terminal 1 (Backend):"
+echo "cd /Users/khalid/Documents/ai-customer-care-agent && npm run dev"
+echo ""
+echo "Terminal 2 (Frontend):"
+echo "cd /Users/khalid/Documents/ai-customer-care-agent/frontend && npm run dev"
+echo ""
+echo "Demo Login Credentials:"
+echo "Email: admin@example.com"
+echo "Password: admin123"

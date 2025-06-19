@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # AI Customer Care Backend
+  aicare-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: aicare-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:./prisma/dev.db
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PINECONE_API_KEY=${PINECONE_API_KEY}
+      - PINECONE_ENVIRONMENT=${PINECONE_ENVIRONMENT}
+      - PINECONE_INDEX_NAME=${PINECONE_INDEX_NAME}
+      - SHOPIFY_DOMAIN=${SHOPIFY_DOMAIN}
+      - SHOPIFY_ACCESS_TOKEN=${SHOPIFY_ACCESS_TOKEN}
+    volumes:
+      - aicare-data:/app/prisma
+      - aicare-logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - aicare-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "const http=require('http');const options={hostname:'localhost',port:3001,path:'/health',method:'GET'};const req=http.request(options,(res)=>{if(res.statusCode===200){process.exit(0)}else{process.exit(1)}});req.on('error',()=>process.exit(1));req.end();"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # AI Customer Care Frontend
+  aicare-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    container_name: aicare-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:3001
+    depends_on:
+      aicare-backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - aicare-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# Named volumes for data persistence
+volumes:
+  aicare-data:
+    name: aicare-data
+  aicare-logs:
+    name: aicare-logs
+
+# Custom network
+networks:
+  aicare-network:
+    name: aicare-network
+    driver: bridge

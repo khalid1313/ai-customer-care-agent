@@ -1,0 +1,184 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Conversation {
+  id          String   @id @default(cuid())
+  customerId  String
+  customerName String?
+  customerEmail String?
+  customerPhone String?
+  channel     String   @default("WEB_CHAT") // WEB_CHAT, WHATSAPP, INSTAGRAM, EMAIL, SMS, SHOPIFY_CONTACT, LIVE_STREAM
+  channelData String?  // JSON string for channel-specific metadata
+  status      String   @default("ACTIVE") // ACTIVE, RESOLVED, ESCALATED, CLOSED, ARCHIVED
+  priority    String   @default("NORMAL") // LOW, NORMAL, HIGH, URGENT
+  sentiment   String?  // positive, negative, neutral
+  intent      String?  // product_inquiry, support, complaint, etc.
+  topic       String?  // current conversation topic
+  assignedTo  String?  // assigned agent/user
+  tags        String?  // comma-separated conversation tags
+  metadata    String?  // JSON string for additional conversation metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lastMessageAt DateTime?
+
+  messages    Message[]
+  aiResponses AIResponse[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             String    @id @default(cuid())
+  conversationId String
+  content        String
+  sender         String    // CUSTOMER, AI_AGENT, HUMAN_AGENT, SYSTEM
+  senderName     String?
+  channel        String    // WEB_CHAT, WHATSAPP, INSTAGRAM, EMAIL, SMS, SHOPIFY_CONTACT, LIVE_STREAM
+  channelData    String?   // JSON string for channel-specific data
+  messageType    String    @default("TEXT") // TEXT, IMAGE, VIDEO, AUDIO, DOCUMENT, SYSTEM, TEMPLATE
+  attachments    String?   // JSON string for file attachments
+  isRead         Boolean   @default(false)
+  parentId       String?   // For threaded conversations
+  replyToId      String?   // For replies
+  sentiment      String?
+  intent         String?
+  entities       String?   // JSON string for extracted entities
+  confidence     Float?    // AI confidence score
+  toolsUsed      String?   // Comma-separated tools used to generate response
+  processingTime Int?      // Time taken to process (ms)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  parent         Message?     @relation("MessageThread", fields: [parentId], references: [id])
+  replies        Message[]    @relation("MessageThread")
+  replyTo        Message?     @relation("MessageReply", fields: [replyToId], references: [id])
+  replyMessages  Message[]    @relation("MessageReply")
+
+  @@map("messages")
+}
+
+model AIResponse {
+  id             String    @id @default(cuid())
+  conversationId String
+  messageId      String?   // Related message if applicable
+  prompt         String    // Input prompt
+  response       String    // AI response
+  model          String    // AI model used
+  toolsUsed      String?   // Comma-separated tools invoked
+  toolResults    String?   // JSON string for results from tool executions
+  confidence     Float?    // Response confidence
+  processingTime Int       // Processing time in ms
+  tokens         Int?      // Tokens consumed
+  cost           Float?    // API cost
+  approved       Boolean?  // Human approval status
+  feedback       String?   // Human feedback
+  createdAt      DateTime  @default(now())
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("ai_responses")
+}
+
+model Session {
+  id            String    @id @default(cuid())
+  customerId    String
+  customerName  String?
+  context       String    // JSON string for conversation context
+  lastActivity  DateTime  @default(now())
+  isActive      Boolean   @default(true)
+  summary       String?   // Session summary
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("sessions")
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  category    String
+  price       Float
+  description String?
+  features    String?  // Comma-separated product features
+  inStock     Boolean  @default(true)
+  stockCount  Int?
+  rating      Float?
+  imageUrl    String?
+  metadata    String?  // JSON string for additional product data
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("products")
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  customerId  String
+  customerName String?
+  customerEmail String?
+  status      String      @default("PENDING") // PENDING, CONFIRMED, PROCESSING, SHIPPED, DELIVERED, CANCELLED, RETURNED
+  total       Float
+  items       String      // JSON string for order items
+  shippingAddress String? // JSON string for shipping address
+  trackingNumber String?
+  notes       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("orders")
+}
+
+model FAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  category  String?
+  tags      String?  // Comma-separated tags
+  priority  Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("faqs")
+}
+
+model KnowledgeBase {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  category    String?
+  tags        String?  // Comma-separated tags
+  isPublic    Boolean  @default(true)
+  priority    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("knowledge_base")
+}
+
+// Channel Integration Models (for future use)
+model ChannelIntegration {
+  id          String        @id @default(cuid())
+  channel     String        // WEB_CHAT, WHATSAPP, INSTAGRAM, EMAIL, SMS, SHOPIFY_CONTACT, LIVE_STREAM
+  isEnabled   Boolean       @default(false)
+  config      String        // JSON string for channel-specific configuration
+  credentials String?       // JSON string for encrypted credentials
+  webhook     String?       // Webhook URL
+  status      String        @default("INACTIVE") // ACTIVE, INACTIVE, ERROR, PENDING
+  lastSync    DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([channel])
+  @@map("channel_integrations")
+}

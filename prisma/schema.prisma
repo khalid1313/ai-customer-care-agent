@@ -1,0 +1,728 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ===== BUSINESS & AUTHENTICATION MODELS =====
+
+model Business {
+  id          String    @id @default(cuid())
+  name        String
+  email       String    @unique
+  phone       String?
+  website     String?
+  industry    String?
+  description String?
+  logo        String?   // URL to logo image
+  timezone    String    @default("UTC")
+  settings    String    // JSON string for business settings
+  subscription String   @default("free") // free, basic, pro, enterprise
+  status      String    @default("active") // active, suspended, deleted
+  
+  // NEW: Shopify Integration
+  shopifyDomain      String?  // mystore.myshopify.com
+  shopifyApiKey      String?  // Shopify API Key
+  shopifyAccessToken String?  // Encrypted access token
+  shopifyStoreId     String?  // Shopify store ID
+  
+  // NEW: Pinecone Integration  
+  pineconeApiKey     String?  // Pinecone API Key
+  pineconeEnvironment String? // Pinecone environment (e.g., "us-east1-gcp")
+  pineconeNamespace  String?  // Unique namespace for this business
+  pineconeIndexName  String?  // Pinecone index name
+  lastProductSync    DateTime? // Last time products were synced
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  users         User[]
+  agents        Agent[]
+  conversations Conversation[]
+  integrations  Integration[]
+  channelIntegrations ChannelIntegration[]
+  tickets       Ticket[]
+  playgrounds   Playground[]
+  productSyncs  ProductSync[]
+  scrapingSessions ScrapingSession[]
+  businessContext  BusinessContext?
+  assignmentSettings AssignmentSettings?
+  chatRooms     ChatRoom[]
+
+  @@map("businesses")
+}
+
+model ProductSync {
+  id                String    @id @default(cuid())
+  businessId        String
+  shopifyProductId  String    // Shopify product ID
+  productTitle      String
+  productHandle     String
+  productUrl        String?
+  productImage      String?
+  productPrice      String?
+  productCategory   String?
+  productTags       String?   // JSON array as string
+  productDescription String?
+  productStatus      String?   // active, archived, draft
+  inventoryQuantity  Int?      // Current inventory quantity
+  inventoryTracked   Boolean   @default(false) // Whether inventory is tracked for this product
+  
+  // Sync Status Tracking
+  shopifyStatus     String    @default("pending") // pending, downloading, synced, failed
+  pineconeStatus    String    @default("not_configured") // not_configured, pending, vectorizing, upserting, indexed, failed
+  vectorId          String?   // Pinecone vector ID
+  contentHash       String?   // MD5 hash of product content for change detection
+  
+  // Timestamps
+  shopifyLastSync   DateTime?
+  pineconeLastSync  DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Error Handling
+  syncAttempts      Int       @default(0)
+  pineconeAttempts  Int       @default(0)
+  lastError         String?
+  
+  // Relations
+  business          Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  
+  @@unique([businessId, shopifyProductId])
+  @@map("product_syncs")
+}
+
+model User {
+  id          String    @id @default(cuid())
+  businessId  String
+  email       String    @unique
+  password    String    // Hashed password
+  firstName   String
+  lastName    String
+  role        String    @default("member") // owner, admin, agent, member
+  avatar      String?   // URL to avatar image
+  isActive    Boolean   @default(true)
+  lastLogin   DateTime?
+  preferences String?   // JSON string for user preferences
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  business          Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  assignedTickets   Ticket[] @relation("AssignedTickets")
+  playgroundSessions Playground[]
+  scrapingSessions  ScrapingSession[]
+  chatParticipants  ChatParticipant[]
+  chatMessages      ChatMessage[]
+  chatReactions     ChatReaction[]
+
+  @@map("users")
+}
+
+model Agent {
+  id          String   @id @default(cuid())
+  businessId  String
+  name        String
+  description String?
+  personality String?  // AI agent personality settings
+  instructions String? // Custom instructions for the agent
+  model       String   @default("gpt-3.5-turbo") // AI model to use
+  temperature Float    @default(0.1)
+  maxTokens   Int      @default(1000)
+  tools       String   // JSON array of enabled tools
+  knowledge   String?  // JSON string for knowledge base
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  business      Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  conversations Conversation[]
+
+  @@map("agents")
+}
+
+// ===== CORE CONVERSATION MODELS =====
+
+model Conversation {
+  id          String   @id @default(cuid())
+  businessId  String
+  agentId     String?
+  customerId  String
+  customerName String?
+  customerEmail String?
+  customerPhone String?
+  channel     String   @default("WEB_CHAT") // WEB_CHAT, WHATSAPP, INSTAGRAM, EMAIL, SMS, SHOPIFY_CONTACT, LIVE_STREAM
+  channelData String?  // JSON string for channel-specific metadata
+  status      String   @default("ACTIVE") // ACTIVE, RESOLVED, ESCALATED, CLOSED, ARCHIVED
+  priority    String   @default("NORMAL") // LOW, NORMAL, HIGH, URGENT
+  sentiment   String?  // positive, negative, neutral
+  intent      String?  // product_inquiry, support, complaint, etc.
+  topic       String?  // current conversation topic
+  assignedTo  String?  // assigned user ID
+  tags        String?  // comma-separated conversation tags
+  metadata    String?  // JSON string for additional conversation metadata
+  isAiHandling Boolean  @default(true) // Controls whether AI should respond to this conversation
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lastMessageAt DateTime?
+
+  // Relations
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  agent       Agent?   @relation(fields: [agentId], references: [id])
+  messages    Message[]
+  aiResponses AIResponse[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             String    @id @default(cuid())
+  conversationId String
+  content        String
+  sender         String    // CUSTOMER, AI_AGENT, HUMAN_AGENT, SYSTEM
+  senderName     String?
+  channel        String    // WEB_CHAT, WHATSAPP, INSTAGRAM, EMAIL, SMS, SHOPIFY_CONTACT, LIVE_STREAM
+  channelData    String?   // JSON string for channel-specific data
+  messageType    String    @default("TEXT") // TEXT, IMAGE, VIDEO, AUDIO, DOCUMENT, SYSTEM, TEMPLATE
+  attachments    String?   // JSON string for file attachments
+  isRead         Boolean   @default(false)
+  parentId       String?   // For threaded conversations
+  replyToId      String?   // For replies
+  sentiment      String?
+  intent         String?
+  entities       String?   // JSON string for extracted entities
+  confidence     Float?    // AI confidence score
+  toolsUsed      String?   // Comma-separated tools used to generate response
+  processingTime Int?      // Time taken to process (ms)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  parent         Message?     @relation("MessageThread", fields: [parentId], references: [id])
+  replies        Message[]    @relation("MessageThread")
+  replyTo        Message?     @relation("MessageReply", fields: [replyToId], references: [id])
+  replyMessages  Message[]    @relation("MessageReply")
+
+  @@map("messages")
+}
+
+model AIResponse {
+  id             String    @id @default(cuid())
+  conversationId String
+  messageId      String?   // Related message if applicable
+  prompt         String    // Input prompt
+  response       String    // AI response
+  model          String    // AI model used
+  toolsUsed      String?   // Comma-separated tools invoked
+  toolResults    String?   // JSON string for results from tool executions
+  confidence     Float?    // Response confidence
+  processingTime Int       // Processing time in ms
+  tokens         Int?      // Tokens consumed
+  cost           Float?    // API cost
+  approved       Boolean?  // Human approval status
+  feedback       String?   // Human feedback
+  createdAt      DateTime  @default(now())
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("ai_responses")
+}
+
+model AgentCredential {
+  id           String   @id @default(cuid())
+  agentId      String
+  agentName    String
+  agentEmail   String
+  tempPassword String
+  createdBy    String
+  isViewed     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@index([createdBy])
+  @@index([agentId])
+  @@index([isViewed])
+  @@map("agent_credentials")
+}
+
+// ===== TICKET SYSTEM =====
+
+model Ticket {
+  id          String   @id @default(cuid())
+  businessId  String
+  customerId  String
+  customerName String?
+  customerEmail String?
+  title       String
+  description String
+  status      String   @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  priority    String   @default("NORMAL") // LOW, NORMAL, HIGH, URGENT
+  category    String?  // refund, return, technical, shipping, billing, product_issue, general
+  assignedTo  String?  // User ID
+  tags        String?  // comma-separated tags
+  metadata    String?  // JSON string for additional data
+  
+  // New fields for enhanced ticketing
+  ticketNumber String? // TK-YYYYMMDD-### format
+  slaDeadline DateTime? // When response is due based on priority/category
+  parentConversationId String? // Links to original conversation
+  followUpCount Int @default(0) // Number of follow-up messages
+  escalationLevel Int @default(0) // 0-3 escalation levels
+  customerNotified Boolean @default(false) // Whether customer was notified of ticket creation
+  lastCustomerMessage DateTime? // Track latest customer interaction
+  source String @default("manual") // ai_chat, manual, email, etc.
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  resolvedAt  DateTime?
+
+  // Relations
+  business     Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  assignedUser User?    @relation("AssignedTickets", fields: [assignedTo], references: [id])
+  comments     TicketComment[]
+
+  @@map("tickets")
+}
+
+model TicketComment {
+  id        String   @id @default(cuid())
+  ticketId  String
+  userId    String?
+  content   String
+  isInternal Boolean @default(false) // Internal comments not visible to customer
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@map("ticket_comments")
+}
+
+// ===== INTEGRATIONS =====
+
+model Integration {
+  id          String   @id @default(cuid())
+  businessId  String
+  type        String   // shopify, whatsapp, instagram, email, stripe, etc.
+  name        String
+  description String?
+  config      String   // JSON string for integration configuration
+  credentials String?  // JSON string for encrypted credentials
+  webhook     String?  // Webhook URL
+  status      String   @default("INACTIVE") // ACTIVE, INACTIVE, ERROR, PENDING
+  lastSync    DateTime?
+  syncData    String?  // JSON string for sync metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  // Unique constraint for business + type combination
+  @@unique([businessId, type])
+  @@map("integrations")
+}
+
+// New Channel Integration Model for Instagram, Messenger, WhatsApp
+model ChannelIntegration {
+  id                  String   @id @default(cuid())
+  businessId          String
+  platform            String   // INSTAGRAM, MESSENGER, WHATSAPP
+  status              String   @default("DISCONNECTED") // CONNECTED, DISCONNECTED, ERROR, PENDING
+  
+  // Authentication tokens
+  accessToken         String?  // Encrypted platform access token
+  refreshToken        String?  // Encrypted refresh token (if applicable)
+  tokenExpiresAt      DateTime? // Token expiration time
+  
+  // Platform-specific data
+  platformAccountId   String?  // Instagram/Facebook User ID, WhatsApp Business Account ID
+  platformAccountName String?  // Account name/username
+  platformPageId      String?  // Facebook Page ID (for Instagram/Messenger)
+  platformPageName    String?  // Facebook Page Name
+  pageAccessToken     String?  // Page-specific access token (encrypted)
+  
+  // Webhook configuration
+  webhookSecret       String?  // Webhook verification token
+  webhookUrl          String?  // Our webhook endpoint URL
+  webhookSubscribed   Boolean  @default(false) // Whether webhook is active
+  webhookSubscribedAt DateTime? // When webhook was subscribed
+  
+  // Connection metadata
+  permissions         String?  // JSON array of granted permissions
+  features            String?  // JSON array of enabled features
+  metadata            String?  // JSON object for platform-specific metadata
+  
+  // Error tracking
+  lastError           String?  // Last error message
+  lastErrorAt         DateTime? // When last error occurred
+  connectionAttempts  Int      @default(0)
+  
+  // Timestamps
+  connectedAt         DateTime? // When first connected
+  lastTestAt          DateTime? // Last connection test
+  lastMessageAt       DateTime? // Last message received
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  business            Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  
+  // Unique constraint - one integration per platform per business
+  @@unique([businessId, platform])
+  @@map("channel_integrations")
+}
+
+// ===== PLAYGROUND =====
+
+model Playground {
+  id          String   @id @default(cuid())
+  businessId  String
+  userId      String
+  name        String
+  description String?
+  scenario    String   // JSON string describing the test scenario
+  messages    String   // JSON array of test messages and expected responses
+  results     String?  // JSON string with test results
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("playgrounds")
+}
+
+// ===== KNOWLEDGE BASE & PRODUCTS =====
+
+model Product {
+  id          String   @id @default(cuid())
+  businessId  String?  // Null for system-wide products
+  name        String
+  category    String
+  price       Float
+  description String?
+  features    String?  // Comma-separated product features
+  inStock     Boolean  @default(true)
+  stockCount  Int?
+  rating      Float?
+  imageUrl    String?
+  metadata    String?  // JSON string for additional product data
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("products")
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  businessId  String?  // Null for system-wide orders
+  customerId  String
+  customerName String?
+  customerEmail String?
+  status      String   @default("PENDING") // PENDING, CONFIRMED, PROCESSING, SHIPPED, DELIVERED, CANCELLED, RETURNED
+  total       Float
+  items       String   // JSON string for order items
+  shippingAddress String? // JSON string for shipping address
+  trackingNumber String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("orders")
+}
+
+model FAQ {
+  id        String   @id @default(cuid())
+  businessId String? // Null for system-wide FAQs
+  question  String
+  answer    String
+  category  String?
+  tags      String?  // Comma-separated tags
+  priority  Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("faqs")
+}
+
+model KnowledgeBase {
+  id          String   @id @default(cuid())
+  businessId  String?  // Null for system-wide knowledge
+  title       String
+  content     String
+  category    String?
+  tags        String?  // Comma-separated tags
+  isPublic    Boolean  @default(true)
+  priority    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("knowledge_base")
+}
+
+// ===== SESSIONS =====
+
+model Session {
+  id            String    @id @default(cuid())
+  businessId    String?
+  customerId    String
+  customerName  String?
+  context       String    // JSON string for conversation context
+  lastActivity  DateTime  @default(now())
+  isActive      Boolean   @default(true)
+  summary       String?   // Session summary
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("sessions")
+}
+
+// ===== SCRAPING & ONBOARDING SYSTEM =====
+
+model ScrapingSession {
+  id          String   @id @default(cuid())
+  businessId  String
+  userId      String
+  
+  // Session configuration
+  targetUrl   String   // Website to scrape
+  sessionType String   @default("full_onboarding") // full_onboarding, content_update, policy_refresh
+  
+  // Progress tracking
+  status      String   @default("initializing") // initializing, discovering, scraping, reviewing, completed, paused, error, abandoned
+  currentStep Int      @default(1)
+  totalSteps  Int      @default(8)
+  
+  // Timing and persistence
+  startedAt   DateTime @default(now())
+  lastActivity DateTime @default(now())
+  pausedAt    DateTime?
+  completedAt DateTime?
+  estimatedCompletion DateTime?
+  
+  // Session data
+  discoveredPages String? // JSON array of found pages
+  extractedData   String? // JSON object of all scraped data
+  userInputs      String? // JSON object of manual user inputs
+  validationResults String? // JSON object of validation checks
+  qualityScore    Float?   // Overall data quality score (0-1)
+  
+  // Progress per step
+  stepProgress String? // JSON object tracking each step's status and data
+  
+  // Recovery and auto-save
+  autoSaveEnabled Boolean @default(true)
+  recoverable     Boolean @default(true)
+  saveCheckpoint  String? // JSON snapshot for recovery
+  
+  // Error handling
+  errors          String? // JSON array of errors encountered
+  warnings        String? // JSON array of warnings
+  skipReasons     String? // JSON array of why steps were skipped
+  
+  // Metadata
+  userAgent       String?
+  ipAddress       String?
+  sessionMetadata String? // JSON for additional session info
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scrapedPages ScrapedPage[]
+  
+  @@map("scraping_sessions")
+}
+
+model ScrapedPage {
+  id              String @id @default(cuid())
+  scrapingSessionId String
+  
+  // Page identification
+  url             String
+  title           String?
+  pageType        String // homepage, about, contact, products, policies, faq, etc.
+  discoveryMethod String // sitemap, crawling, manual, pattern_matching
+  
+  // Scraping results
+  status          String @default("pending") // pending, scraping, completed, failed, skipped
+  scrapedAt       DateTime?
+  
+  // Content extraction
+  rawHtml         String? // Full HTML content (compressed)
+  extractedText   String? // Clean text content
+  extractedData   String? // JSON object of structured data
+  extractedImages String? // JSON array of image URLs and metadata
+  
+  // Quality and validation
+  contentQuality  Float? // Quality score (0-1)
+  dataCompleteness Float? // How complete the extracted data is (0-1)
+  validationIssues String? // JSON array of validation problems
+  
+  // Processing metadata
+  processingTime  Int? // Time taken to scrape (ms)
+  retryCount      Int @default(0)
+  lastError       String?
+  
+  // User interaction
+  needsReview     Boolean @default(false)
+  userApproved    Boolean?
+  userModifications String? // JSON object of user changes
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  scrapingSession ScrapingSession @relation(fields: [scrapingSessionId], references: [id], onDelete: Cascade)
+  
+  @@unique([scrapingSessionId, url])
+  @@map("scraped_pages")
+}
+
+model BusinessContext {
+  id         String @id @default(cuid())
+  businessId String @unique
+  
+  // Scraped business information
+  businessInfo    String? // JSON: name, description, mission, values, history
+  contactInfo     String? // JSON: addresses, phones, emails, hours
+  serviceInfo     String? // JSON: services, products, offerings, pricing
+  policyInfo      String? // JSON: returns, privacy, terms, shipping
+  teamInfo        String? // JSON: team members, leadership, about us
+  mediaAssets     String? // JSON: logos, images, videos, documents
+  
+  // Generated AI context
+  brandVoice      String? // Analyzed brand personality and tone
+  industryContext String? // Industry-specific context and terminology
+  aiPersonality   String? // Generated AI agent personality
+  responseTemplates String? // JSON: common response patterns
+  
+  // Quality and completeness tracking
+  completenessScore Float? // Overall completeness (0-1)
+  qualityScore     Float?  // Content quality score (0-1)
+  lastValidation   DateTime?
+  
+  // Source tracking
+  sourceUrl        String? // Original website URL
+  lastScrapeDate   DateTime?
+  scrapingSessionId String? // Reference to originating scraping session
+  
+  // Manual enhancements
+  manualAdditions  String? // JSON: user-added content
+  customizations   String? // JSON: user customizations
+  
+  // Brand Wizard Knowledge Base
+  knowledgeBase    String? // JSON: final structured knowledge base from brand wizard
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  // Relations
+  business         Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  
+  @@map("business_contexts")
+}
+
+model AssignmentSettings {
+  id                  String   @id @default(cuid())
+  businessId          String   @unique
+  method              String   @default("manual") // 'manual', 'round_robin', 'category_wise'
+  categoryAssignments String   @default("{}") // JSON string for category -> agentId mappings
+  roundRobinIndex     Int      @default(0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  business            Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@map("assignment_settings")
+}
+
+// ===== AGENT CHAT SYSTEM =====
+
+model ChatRoom {
+  id          String   @id @default(cuid())
+  businessId  String
+  name        String?  // Optional room name (for group chats)
+  type        String   @default("direct") // 'direct', 'group', 'support'
+  isActive    Boolean  @default(true)
+  createdBy   String   // User ID who created the room
+  lastActivity DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  business     Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  participants ChatParticipant[]
+  messages     ChatMessage[]
+
+  @@map("chat_rooms")
+}
+
+model ChatParticipant {
+  id           String   @id @default(cuid())
+  chatRoomId   String
+  userId       String
+  role         String   @default("member") // 'admin', 'member'
+  joinedAt     DateTime @default(now())
+  lastRead     DateTime @default(now())
+  isActive     Boolean  @default(true)
+
+  // Relations
+  chatRoom     ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatRoomId, userId])
+  @@map("chat_participants")
+}
+
+model ChatMessage {
+  id           String   @id @default(cuid())
+  chatRoomId   String
+  senderId     String
+  content      String
+  messageType  String   @default("text") // 'text', 'file', 'ticket_tag', 'system'
+  metadata     String?  // JSON for ticket IDs, file info, etc.
+  replyToId    String?  // ID of message being replied to
+  editedAt     DateTime?
+  deletedAt    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  chatRoom     ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+  sender       User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  replyTo      ChatMessage? @relation("MessageReply", fields: [replyToId], references: [id])
+  replies      ChatMessage[] @relation("MessageReply")
+  reactions    ChatReaction[]
+
+  @@map("chat_messages")
+}
+
+model ChatReaction {
+  id           String   @id @default(cuid())
+  messageId    String
+  userId       String
+  emoji        String   // 👍, ❤️, 😄, etc.
+  createdAt    DateTime @default(now())
+
+  // Relations
+  message      ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId, emoji])
+  @@map("chat_reactions")
+}

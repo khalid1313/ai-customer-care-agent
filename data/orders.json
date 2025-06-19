@@ -1,0 +1,156 @@
+[
+  {
+    "id": "ORD-2024-001",
+    "customerId": "CUST-001",
+    "customerName": "John Smith",
+    "customerEmail": "john.smith@email.com",
+    "status": "DELIVERED",
+    "total": 139.98,
+    "items": [
+      {
+        "productId": "1",
+        "productName": "Wireless Bluetooth Headphones",
+        "quantity": 1,
+        "price": 89.99
+      },
+      {
+        "productId": "4",
+        "productName": "USB-C Fast Charger",
+        "quantity": 2,
+        "price": 24.99
+      }
+    ],
+    "shippingAddress": {
+      "street": "123 Main St",
+      "city": "New York",
+      "state": "NY",
+      "zipCode": "10001"
+    },
+    "trackingNumber": "TRK123456789",
+    "notes": "Delivered successfully to front door",
+    "createdAt": "2024-06-01T10:30:00Z",
+    "updatedAt": "2024-06-05T14:20:00Z"
+  },
+  {
+    "id": "ORD-2024-002",
+    "customerId": "CUST-002",
+    "customerName": "Sarah Johnson",
+    "customerEmail": "sarah.j@email.com",
+    "status": "SHIPPED",
+    "total": 349.98,
+    "items": [
+      {
+        "productId": "3",
+        "productName": "Smartwatch Pro",
+        "quantity": 1,
+        "price": 299.99
+      },
+      {
+        "productId": "2",
+        "productName": "Gaming Mouse RGB",
+        "quantity": 1,
+        "price": 49.99
+      }
+    ],
+    "shippingAddress": {
+      "street": "456 Oak Ave",
+      "city": "Los Angeles",
+      "state": "CA",
+      "zipCode": "90210"
+    },
+    "trackingNumber": "TRK987654321",
+    "notes": "Express shipping requested",
+    "createdAt": "2024-06-10T09:15:00Z",
+    "updatedAt": "2024-06-11T16:45:00Z"
+  },
+  {
+    "id": "ORD-2024-003",
+    "customerId": "CUST-003",
+    "customerName": "Mike Davis",
+    "customerEmail": "mike.davis@email.com",
+    "status": "PROCESSING",
+    "total": 129.99,
+    "items": [
+      {
+        "productId": "5",
+        "productName": "Mechanical Keyboard",
+        "quantity": 1,
+        "price": 129.99
+      }
+    ],
+    "shippingAddress": {
+      "street": "789 Pine St",
+      "city": "Chicago",
+      "state": "IL",
+      "zipCode": "60601"
+    },
+    "trackingNumber": null,
+    "notes": "Processing payment",
+    "createdAt": "2024-06-11T14:20:00Z",
+    "updatedAt": "2024-06-11T14:20:00Z"
+  },
+  {
+    "id": "ORD-2024-004",
+    "customerId": "CUST-001",
+    "customerName": "John Smith",
+    "customerEmail": "john.smith@email.com",
+    "status": "PENDING",
+    "total": 159.99,
+    "items": [
+      {
+        "productId": "6",
+        "productName": "Wireless Earbuds Pro",
+        "quantity": 1,
+        "price": 159.99
+      }
+    ],
+    "shippingAddress": {
+      "street": "123 Main St",
+      "city": "New York",
+      "state": "NY",
+      "zipCode": "10001"
+    },
+    "trackingNumber": null,
+    "notes": "Waiting for item to come back in stock",
+    "createdAt": "2024-06-11T16:30:00Z",
+    "updatedAt": "2024-06-11T16:30:00Z"
+  },
+  {
+    "id": "ORD-2024-005",
+    "customerId": "CUST-004",
+    "customerName": "Emma Wilson",
+    "customerEmail": "emma.wilson@email.com",
+    "status": "CONFIRMED",
+    "total": 199.97,
+    "items": [
+      {
+        "productId": "7",
+        "productName": "4K Webcam",
+        "quantity": 1,
+        "price": 89.99
+      },
+      {
+        "productId": "8",
+        "productName": "Portable Speaker",
+        "quantity": 1,
+        "price": 79.99
+      },
+      {
+        "productId": "9",
+        "productName": "Laptop Stand",
+        "quantity": 1,
+        "price": 39.99
+      }
+    ],
+    "shippingAddress": {
+      "street": "321 Elm St",
+      "city": "Seattle",
+      "state": "WA",
+      "zipCode": "98101"
+    },
+    "trackingNumber": null,
+    "notes": "Order confirmed, preparing for shipment",
+    "createdAt": "2024-06-11T18:45:00Z",
+    "updatedAt": "2024-06-11T19:15:00Z"
+  }
+]
